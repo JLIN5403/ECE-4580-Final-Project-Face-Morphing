@@ -151,8 +151,8 @@ def morphTriangle(img1, img2, img, t1, t2, t, alpha):
 
 if __name__ == '__main__':
 
-    filename1 = './image/iron.jpg'
-    filename2 = './image/child.jpg'
+    filename1 = './images/bp.jpg'
+    filename2 = './images/obama.jpg'
     alphaList = []
     for n in range(51):
         alphaList.append(float(0.02 * n))
