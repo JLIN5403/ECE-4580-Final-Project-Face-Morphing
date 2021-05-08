@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import dlib
 import random
-#import sys
+import sys
 
 
 def draw_point(img, p, color):
@@ -53,7 +53,8 @@ def rect_contains(rect, point):
 
 def delaunayTriangulation(img, subdiv, points, delaunay_color, doDraw):
     triangleList = subdiv.getTriangleList()
-    r = (0, 0, img.shape[1], img.shape[0])
+    size = img.shape
+    r = (0, 0, size[1], size[0])
     indexesList = []
     for t in triangleList:
 
@@ -141,8 +142,8 @@ def morphTriangle(img1, img2, img, t1, t2, t, alpha):
 
 if __name__ == '__main__':
 
-    filename1 = 'Chef'
-    filename2 = 'CP3'
+    filename1 = './image/Chef'
+    filename2 = './image/CP3'
     alphaList = []
     for n in range(51):
         print(n)
@@ -160,6 +161,9 @@ if __name__ == '__main__':
     width2 = float(img2.shape[1])
     img2 = cv2.resize(img2, (int(img1.shape[1]), int(img1.shape[0])))
     img2_orig = img2.copy()
+
+    cv2.imshow('Image 1 Original', img1_orig)
+    cv2.imshow('Image 2 Original', img2_orig)
 
     points1 = detectFaceLandmarks(img1)
     points2 = detectFaceLandmarks(img2)
@@ -213,6 +217,8 @@ if __name__ == '__main__':
         morphVideo.append(np.uint8(imgMorph))
     cv2.imshow('Image 1 with Facial Landmarks', img1_points)
     cv2.imshow('Image 2 with Facial Landmarks', img2_points)
+    #img_landmarks = np.concatenate((img1_points, img2_points), axis=1)
+    #cv2.imshow('Images with Facial Landmarks', img_landmarks)
     subdiv1 = cv2.Subdiv2D((0, 0, img1.shape[1], img1.shape[0]))
 
     for p1 in points1:
@@ -222,6 +228,7 @@ if __name__ == '__main__':
         indexesList = delaunayTriangulation(img1_triangles, subdiv1, points1, (0, 255, 0), True)
         cv2.imshow('Image 1 with Delaunay Triangulation', img1_triangles)
         cv2.waitKey(100)
+
     subdiv2 = cv2.Subdiv2D((0, 0, img2.shape[1], img2.shape[0]))
 
     for p2 in points2:
@@ -247,10 +254,18 @@ if __name__ == '__main__':
     draw_voronoi(img2_voronoi, subdiv2)
 
     cv2.imshow('Image 2 Voronoi', img2_voronoi)
+    #img_voronoi = np.concatenate((img1_voronoi, img2_voronoi), axis=1)
+    #cv2.imshow('Images 1 & 2 Voronoi', img_voronoi)
 
     for morphImage in morphVideo:
         cv2.imshow('Morphed Video', morphImage)
         cv2.waitKey(50)
 
-    cv2.imshow('Midway Face', morphVideo[alphaList.index(0.5)])
+    if len(sys.argv) > 1:
+        value = sys.argv[1]
+        value = float(value)
+    else:
+        value = 0.5
+    cv2.imshow('Morphed Face with alpha = %f' % (value,), morphVideo[alphaList.index(value)])
+    #cv2.imshow('Midway Face', morphVideo[alphaList.index(0.5)])
     cv2.waitKey(0)
