@@ -151,12 +151,11 @@ def morphTriangle(img1, img2, img, t1, t2, t, alpha):
 
 if __name__ == '__main__':
 
-    filename1 = './images/bp.jpg'
-    filename2 = './images/obama.jpg'
+    filename1 = './images/Jacky.jpg'
+    filename2 = './images/Vivian.jpg'
     alphaList = []
     for n in range(51):
         alphaList.append(float(0.02 * n))
-    #alphaList.append(1)
 
     # Read images
     img1 = cv2.imread(filename1)
@@ -183,10 +182,6 @@ if __name__ == '__main__':
     img2_points = img2_orig.copy()
     for p2 in points2:
         draw_point(img2_points, p2, (255, 0, 0))
-
-    # Convert Mat to float data type
-    #img1 = np.float32(img1)
-    #img2 = np.float32(img2)
 
     # Create an instance of Subdiv2D
     subdiv = cv2.Subdiv2D((0, 0, img2.shape[1], img2.shape[0]))
@@ -226,8 +221,6 @@ if __name__ == '__main__':
         morphVideo.append(np.uint8(imgMorph))
     cv2.imshow('Image 1 with Facial Landmarks', img1_points)
     cv2.imshow('Image 2 with Facial Landmarks', img2_points)
-    #img_landmarks = np.concatenate((img1_points, img2_points), axis=1)
-    #cv2.imshow('Images with Facial Landmarks', img_landmarks)
     subdiv1 = cv2.Subdiv2D((0, 0, img1.shape[1], img1.shape[0]))
 
     for p1 in points1:
@@ -263,8 +256,6 @@ if __name__ == '__main__':
     draw_voronoi(img2_voronoi, subdiv2)
 
     cv2.imshow('Image 2 Voronoi', img2_voronoi)
-    #img_voronoi = np.concatenate((img1_voronoi, img2_voronoi), axis=1)
-    #cv2.imshow('Images 1 & 2 Voronoi', img_voronoi)
 
     videoOut = cv2.VideoWriter("MorphingVideo.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (int(img1_orig.shape[1]), int(img1_orig.shape[0])))
 
@@ -280,5 +271,4 @@ if __name__ == '__main__':
     else:
         value = 0.5
     cv2.imshow('Morphed Face with alpha = %f' % (value,), morphVideo[alphaList.index(value)])
-    #cv2.imshow('Midway Face', morphVideo[alphaList.index(0.5)])
     cv2.waitKey(0)
